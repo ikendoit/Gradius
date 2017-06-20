@@ -27,20 +27,6 @@ public class ShipImpl implements Ship {
 		this.d = d;
 	}
 
-	public void setDirection(String s){ 
-		switch (s) {
-			case  "LEFT" : setDirection(Direction.LEFT); break;
-			case  "RIGHT" : setDirection(Direction.RIGHT); break; 
-			case  "UP" : setDirection(Direction.UP); break ;
-			case  "DOWN" : setDirection(Direction.DOWN); break;
-			case  "DOWNRIGHT" : setDirection(Direction.DOWNRIGHT); break;
-			case  "DOWNLEFT" : setDirection(Direction.DOWNLEFT); break;
-			case  "UPRIGHT" : setDirection(Direction.UPRIGHT); break;
-			case  "UPLEFT" : setDirection(Direction.UPLEFT); break;
-			case  "NONE" : setDirection(Direction.NONE); break;
-		}
-	}
-
 	public void setMovementBounds(Rectangle2D movementBounds) {
 	}
 

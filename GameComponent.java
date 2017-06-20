@@ -22,14 +22,14 @@ public class GameComponent extends JComponent {
 	ArrayList<Asteroid> asteroids;
 
 	public GameComponent() {
+		
 		//key Adapter
 		setFocusable(true);
 		addKeyListener(new ShipKeyListener());
 
 		//starts Asteroids
 		asteroids = new ArrayList<Asteroid>();
-		asteroids.add(makeAsteroid(500, 500));
-
+		
 		//starts ship
 		ship = new ShipImpl(10, GameFrame.HEIGHT/2);
 
@@ -46,13 +46,13 @@ public class GameComponent extends JComponent {
 
 	//draw components
 	private void paintComponent(Graphics2D g) {
-		//draw ship
-		ship.draw(g);
-
 		//draw asteroids
 		for(Asteroid asteroid : asteroids){
 			asteroid.draw(g);
 		}
+
+		//draw ship
+		ship.draw(g);
 	}
 
 	//update in real-time
@@ -64,70 +64,58 @@ public class GameComponent extends JComponent {
 
 	//start timer
 	public void start() {
+		AsteroidFactory.getInstance().setStartBounds(getWidth()-30,0,getHeight()-30);
 		timer.start();
+		asteroids.add(makeAsteroid());
+
 	}
 
 	//make asteroid
-	public Asteroid makeAsteroid(int x, int y){
-		return AsteroidFactory.getInstance().makeAsteroid(x,y);
+	public Asteroid makeAsteroid(){
+		return AsteroidFactory.getInstance().makeAsteroid();
+	}
+
+	//move Asteroids
+	public void moveAsteroid(){
+		for (Asteroid asteroid : asteroids){
+			asteroid.move();
+		}
 	}
 
 	class ShipKeyListener extends KeyAdapter{	
-		public boolean up(int keyCode){
-			if (keyCode== KeyEvent.VK_UP ||keyCode== KeyEvent.VK_W ||keyCode== KeyEvent.VK_KP_UP){
-				return true;
-			}
-			return false;
-		}
-
-		public boolean down(int keyCode){
-			if (keyCode== KeyEvent.VK_DOWN ||keyCode== KeyEvent.VK_S ||keyCode== KeyEvent.VK_KP_DOWN){
-				return true;
-			}
-			else return false;
-		}
-
-		public boolean right(int keyCode){
-			if (keyCode== KeyEvent.VK_RIGHT ||keyCode== KeyEvent.VK_D ||keyCode== KeyEvent.VK_KP_RIGHT){ 
-				return true;
-			}
-			return false;
-		}
-
-		public boolean left(int keyCode){
-			if (keyCode == KeyEvent.VK_LEFT ||keyCode == KeyEvent.VK_A ||keyCode == KeyEvent.VK_KP_LEFT){ 
-				return true;
-			}
-			return false;
-		}
 		@Override
 		public void keyTyped(KeyEvent e) {
 		}
 
 		@Override
 		public void keyPressed(KeyEvent e){ 
-			if (up(e.getKeyCode())) { 
-				ship.setDirection("UP"); 
-			} else if (down(e.getKeyCode())){
-				ship.setDirection("DOWN");
-			} else if (right(e.getKeyCode())){
-				ship.setDirection("RIGHT");
-			} else if (left(e.getKeyCode())){
-				ship.setDirection("LEFT");
-			} else if (down(e.getKeyCode()) && right(e.getKeyCode())){
-				ship.setDirection("DOWNRIGHT");
-			} else if (down(e.getKeyCode()) && left(e.getKeyCode())){
-				ship.setDirection("DOWNLEFT");
-			} else if (up(e.getKeyCode()) && right(e.getKeyCode())){
-				ship.setDirection("UPRIGHT");
-			} else if (up(e.getKeyCode()) && left(e.getKeyCode())){
-				ship.setDirection("UPLEFT");
+			switch(e.getKeyCode()) {
+				case KeyEvent.VK_UP: 
+				case KeyEvent.VK_W:  
+				case KeyEvent.VK_KP_UP :
+					ship.setDirection(Ship.Direction.UP);
+				case KeyEvent.VK_RIGHT:  
+				case KeyEvent.VK_D:  
+				case KeyEvent.VK_KP_RIGHT:
+					ship.setDirection(Ship.Direction.UPRIGHT);
+					break;
+				case KeyEvent.VK_LEFT:  
+				case KeyEvent.VK_A:  
+				case KeyEvent.VK_KP_LEFT:
+					ship.setDirection(Ship.Direction.UPLEFT);
+					break;
+				case KeyEvent.VK_DOWN:  
+				case KeyEvent.VK_S:  
+				case KeyEvent.VK_KP_DOWN:
+					ship.setDirection(Ship.Direction.DOWN);
+				
 			}
+
 		}
 
 		@Override
 		public void keyReleased(KeyEvent e){
-			ship.setDirection("NONE");
+			ship.setDirection(Ship.Direction.NONE);
 		}
 
 	}

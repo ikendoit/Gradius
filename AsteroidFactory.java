@@ -23,8 +23,8 @@ public class AsteroidFactory {
 		startBounds = new Rectangle(x, minY, x, maxY);
 	}
 	
-	public Asteroid makeAsteroid(int x, int y) {
-		Asteroid asteroid = new AsteroidImpl(x, y);
+	public Asteroid makeAsteroid() {
+		Asteroid asteroid = new AsteroidImpl(startBounds.x, random(startBounds.y,startBounds.height));
 		return asteroid;
 	}
 
@@ -37,12 +37,17 @@ public class AsteroidFactory {
 
 		private final static Color COLOR = Color.DARK_GRAY;
 		private final Ellipse2D.Double shape;
+		private int x; 
+		private int y;
 
 		private AsteroidImpl(int x, int y) {
-			shape = new Ellipse2D.Double(50, 500, x, y);
+			shape = new Ellipse2D.Double(x, y, 30, 30);
+			this.x =x;
+			this.y =y;
 		}
 		
 		public void move() {
+			x-=1;
 		}
 
 		public boolean isVisible() {
@@ -50,6 +55,7 @@ public class AsteroidFactory {
 		}
 
 		public void draw(Graphics2D g) {
+			g.translate(x,y);
 			g.setColor(COLOR);
 			g.draw(shape);
 			g.fill(shape);
