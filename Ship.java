@@ -1,11 +1,13 @@
 import java.awt.geom.Rectangle2D;
 
 public interface Ship extends Sprite {
+	public int speed =2;
 
 	public enum Direction {
-		NONE(0,0), UP(0,-2), DOWN(0,2), LEFT(-2,0), RIGHT(2,0), UPRIGHT(2,-2), DOWNRIGHT(2,2),UPLEFT(-2,-2),DOWNLEFT(-2,2);
+		NONE(0,0), UP(0,-speed), DOWN(0,speed), LEFT(-speed,0), RIGHT(speed,0), UPRIGHT(speed,-speed), DOWNRIGHT(speed,speed),UPLEFT(-speed,-speed),DOWNLEFT(-speed,speed);
 		public final int dy;
 		public final int dx;
+	
 		Direction(int dx, int dy) {
 			this.dy = dy;
 			this.dx = dx;

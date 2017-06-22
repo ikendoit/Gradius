@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class GameFrame extends JFrame {
 	
-	public final static int WIDTH = 900;
+	private final static int WIDTH = 900;
 	public final static int HEIGHT = 700;
 	
 	private final GameComponent comp;

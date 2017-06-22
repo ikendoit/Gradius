@@ -33,32 +33,34 @@ public class AsteroidFactory {
 		return min + (int) (rand.nextDouble()*(max-min));
 	}
 	
+//************Asteroid Impl***************** */
 	private static class AsteroidImpl implements Asteroid {
 
 		private final static Color COLOR = Color.DARK_GRAY;
 		private final Ellipse2D.Double shape;
-		private int x; 
-		private int y;
+		public int x = 0;
 
 		private AsteroidImpl(int x, int y) {
 			shape = new Ellipse2D.Double(x, y, 30, 30);
-			this.x =x;
-			this.y =y;
 		}
 		
 		public void move() {
-			x-=1;
+			x+=1;
 		}
 
 		public boolean isVisible() {
+			if (x >= 900) {
+				return false;
+			}
 			return true;
 		}
 
 		public void draw(Graphics2D g) {
-			g.translate(x,y);
+			g.translate(-x,0);
 			g.setColor(COLOR);
 			g.draw(shape);
 			g.fill(shape);
+			g.translate(+x,0);
 		}
 
 		public Shape getShape() {
@@ -67,6 +69,10 @@ public class AsteroidFactory {
 
 		public boolean intersects(Sprite other) {
 			return false;
+		}
+
+		public boolean outOfRange(){
+			return (x>=700 ? true : false);
 		}
 	}
 }

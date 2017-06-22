@@ -28,10 +28,17 @@ public class ShipImpl implements Ship {
 	}
 
 	public void setMovementBounds(Rectangle2D movementBounds) {
+		this.movementBounds = movementBounds;
 	}
 
 	public void move() {
 		shape.translate(d.dx,d.dy);
+		if ( (shape.xpoints[0] <= movementBounds.getMinX() || shape.ypoints[0] <=movementBounds.getMinY()) ||
+			 (shape.xpoints[2] >= movementBounds.getMaxX() || shape.ypoints[0] <=movementBounds.getMinY()) || 
+			 (shape.xpoints[2] >= movementBounds.getMaxX() || shape.ypoints[1] >=movementBounds.getMaxY()) ||
+			 (shape.xpoints[0] <= movementBounds.getMinX() || shape.ypoints[1] >=movementBounds.getMaxY())) {
+				 shape.translate(-d.dx,-d.dy);
+		} 
 	}
 
 	public void draw(Graphics2D g) {
@@ -46,7 +53,8 @@ public class ShipImpl implements Ship {
 		return shape;
 	}
 
-	public boolean intersects(Sprite other) {
+	public boolean intersects(Shape shape) {
+		if (shape.intersects(shape., y, w, h))
 		return false;
 	}
 }
