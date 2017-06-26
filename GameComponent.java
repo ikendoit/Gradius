@@ -1,11 +1,16 @@
 import javax.swing.JComponent;
 import javax.swing.Timer;
+
+import ShipFeatures.Bullets;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Font;
 import java.awt.Color;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.BasicStroke;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -22,8 +27,11 @@ public class GameComponent extends JComponent {
 	ArrayList<Timer> timers;
 	Timer timer;
 	ShipImpl ship;
+	ShipFeatures shipFeatures ; 
 	ArrayList<Asteroid> asteroids;
+	ArrayList<Bullets> bullets;
 	static String keyCombination="";
+	static double scores;
 
 	public GameComponent() {
 		//key Adapter
@@ -35,14 +43,17 @@ public class GameComponent extends JComponent {
 		
 		//starts ship
 		ship = new ShipImpl(10, GameFrame.HEIGHT/2);
-		
-		
+		shipFeatures = new ShipFeatures(ship,0, 20);
+
+		//start Bullets
+		bullets = new ArrayList<Bullets>();
 
 		//timer task
 		Timer timerAsteroids = new Timer(1000/4,(e) -> { 
 			for (int i = 0 ; i < 2 ; i ++){
 				asteroids.add(makeAsteroid()); 
 			}
+			scores+=0.25;
 			
 		});
 		timer = new Timer(1000/60,(e) -> {update(); }); 
@@ -61,13 +72,26 @@ public class GameComponent extends JComponent {
 
 	//draw components
 	private void paintComponent(Graphics2D g) {
+		g.setColor(Color.blue);
+		g.fillRect(getWidth(), getHeight(), 50, 200);
 		//draw asteroids
 		for(Asteroid asteroid : asteroids){
 			asteroid.draw(g);
 		}
-
 		//draw ship
 		ship.draw(g);
+		if (ship.health <= 0 ){
+			paintComponentEnd(g);
+		}
+		shipFeatures.draw(g);
+	}
+
+	private void paintComponentEnd(Graphics2D g){
+		g.setColor(Color.GREEN);
+		g.setFont(new Font("TimesRoman", Font.BOLD, 18));
+		g.drawString("YOU CRASHED YOUR SHIP, SPOCK !", getWidth()/3,  getHeight()/2 );
+		g.drawString("YOU GOT: "+scores , getWidth()/3,getHeight()/2 +18);
+		gameOver();
 	}
 
 //*******************update and start ************************
@@ -76,19 +100,25 @@ public class GameComponent extends JComponent {
 		ship.move(); 
 		moveAsteroid();
 		checkAsteroid();
+		checkCollisions();
 		repaint();
 	}
 
 	//start timer
 	public void start() {
-		AsteroidFactory.getInstance().setStartBounds(getWidth(),0,getHeight());
+		AsteroidFactory.getInstance().setStartBounds(getWidth(),0,getHeight()-30);
 		for (Timer timerInternal : timers){
 			timerInternal.start();
 		}
 		ship.setMovementBounds(new Rectangle2D.Double(0,0,getWidth(),getHeight()));
-		
 	}
 
+	public void gameOver(){
+		for (Timer timerInternal : timers){
+			timerInternal.stop();
+		}
+
+	}
 //*******************Asteroid Methods**************************** */
 	public Asteroid makeAsteroid() {
 		return AsteroidFactory.getInstance().makeAsteroid();
@@ -106,10 +136,35 @@ public class GameComponent extends JComponent {
 			for (Asteroid asteroid : asteroids){
 				if (!asteroid.isVisible()){
 					asteroids.remove(asteroid);
-				}
+				} 
 			}
 		} catch (Exception e){}
 	}
+
+	public void	checkCollisions() throws ConcurrentModificationException {
+		try {
+			for (Asteroid asteroid : asteroids){
+				if (asteroid.intersects(ship)){
+					asteroids.remove(asteroid);
+					System.out.println("ship has crashed" );
+					System.out.println("Health left "+ --ship.health);
+				}
+			}
+		} catch (Exception e) {}
+	}
+
+
+//*******************Bullet Creation********************* */
+	public Bullets makeBullet(){
+		return ShipFeatures.makeBullet();
+	}
+
+	public void moveBullets(){
+		for (Bullets bullet : bullets){
+			bullet.move();
+		}
+	}
+
 
 //*******************ShipkeyListener********************* */
 	class ShipKeyListener extends KeyAdapter{	
@@ -156,6 +211,9 @@ public class GameComponent extends JComponent {
 			}
 			if (keyCombination.contains("D") && keyCombination.contains("L")){
 				ship.setDirection(Ship.Direction.DOWNLEFT);
+			}
+			if(keyCombination.contains("B")){
+				bullets.add
 			}
 
 		}

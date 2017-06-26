@@ -24,7 +24,9 @@ public class AsteroidFactory {
 	}
 	
 	public Asteroid makeAsteroid() {
-		Asteroid asteroid = new AsteroidImpl(startBounds.x, random(startBounds.y,startBounds.height));
+		Asteroid asteroid = new AsteroidImpl(startBounds.x, random(startBounds.y,startBounds.height)
+											, random(10,40), random(10,40)
+											, random(1,4));
 		return asteroid;
 	}
 
@@ -38,41 +40,42 @@ public class AsteroidFactory {
 
 		private final static Color COLOR = Color.DARK_GRAY;
 		private final Ellipse2D.Double shape;
-		public int x = 0;
+		private final int velocity;
 
-		private AsteroidImpl(int x, int y) {
-			shape = new Ellipse2D.Double(x, y, 30, 30);
+		private AsteroidImpl(int x, int y, int width, int height, int velocity) {
+			shape = new Ellipse2D.Double(x, y, width, height);
+			this.velocity = velocity;
 		}
 		
 		public void move() {
-			x+=1;
+			shape.x-= velocity;
 		}
 
 		public boolean isVisible() {
-			if (x >= 900) {
+			if (outOfRange()) {
 				return false;
 			}
 			return true;
 		}
 
 		public void draw(Graphics2D g) {
-			g.translate(-x,0);
 			g.setColor(COLOR);
 			g.draw(shape);
 			g.fill(shape);
-			g.translate(+x,0);
 		}
 
 		public Shape getShape() {
 			return shape;
 		}
 
-		public boolean intersects(Sprite other) {
-			return false;
+		@Override
+		public boolean intersects(Sprite ship) {
+			Area asteroid = new Area(shape);
+			return ship.intersects(this);
 		}
 
 		public boolean outOfRange(){
-			return (x>=700 ? true : false);
+			return (shape.x <=0 ? true : false);
 		}
 	}
 }

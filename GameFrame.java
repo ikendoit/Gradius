@@ -16,7 +16,7 @@ public class GameFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		GameFrame frame = new GameFrame();
-		frame.setBackground(Color.BLACK);
+		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setSize(WIDTH, HEIGHT);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);

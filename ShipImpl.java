@@ -10,9 +10,11 @@ public class ShipImpl implements Ship {
 	private final static int FRONT_I = 2;
 	private final static int HEIGHT = 20;
 	private final static int WIDTH = HEIGHT;
+	public static int health;
+	public static final int health_MAX = 18;
 	private Polygon shape;
 	private Direction d;
-	private Rectangle2D movementBounds;
+	public Rectangle2D movementBounds;
 
 
 	public ShipImpl(int x, int y){
@@ -21,6 +23,7 @@ public class ShipImpl implements Ship {
 			new int[] {0,HEIGHT,HEIGHT/2}, 3);
 		shape.translate(x, y);
 		d = Direction.NONE;
+		health = health_MAX;
 	}
 
 	public void setDirection(Direction d) {
@@ -46,15 +49,20 @@ public class ShipImpl implements Ship {
 		g.fill(shape); 
 		g.setColor(BORDER);
 		g.draw(shape);
-		g.dispose();
+
 	}
 
 	public Shape getShape() {
 		return shape;
 	}
 
-	public boolean intersects(Shape shape) {
-		if (shape.intersects(shape., y, w, h))
-		return false;
+	public Point2D getGunPoint(){
+		return new Point2D.Double(shape.xpoints[2], shape.ypoints[2]);
+	}
+
+	public boolean intersects(Sprite asteroid) {
+		Area shipArea = new Area(shape); 
+		shipArea.intersect(new Area(asteroid.getShape()));
+		return !shipArea.isEmpty();
 	}
 }
